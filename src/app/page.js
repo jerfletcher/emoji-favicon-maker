@@ -35,7 +35,7 @@ export default function Home() {
       if (!activeCategories.has(category)) return null;
       return emojis.map(emoji => (
         <div key={emoji.char} className="emoji-item" title={emoji.name}>
-        <span className="emoji tweMoji" onClick={() => convertToFavicon(emoji.char, emoji.name, 'Twemoji')}>{emoji.char}</span>
+        <span className="emoji twemoji" onClick={() => convertToFavicon(emoji.char, emoji.name, 'Twemoji')}>{emoji.char}</span>
         <span className="emoji notoColor" onClick={() => convertToFavicon(emoji.char, emoji.name, 'Noto Color Emoji')}>{emoji.char}</span>
         <span className="emoji-name">{emoji.name}</span>
         </div>

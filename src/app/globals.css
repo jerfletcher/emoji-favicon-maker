@@ -1,4 +1,5 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css');
+@import url('https://cdn.jsdelivr.net/npm/twemoji-colr-font@15.0.3/twemoji.min.css');
 
 @tailwind base;
 @tailwind components;
@@ -29,10 +30,6 @@ body {
 }
 
 @font-face {
-  font-family: 'Twemoji';
-  src: url('https://twemoji.maxcdn.com/v/latest/twemoji.ttf') format('truetype');
-}
-@font-face {
 font-family: 'Noto Color Emoji';
 src: url(https://raw.githack.com/googlefonts/noto-emoji/main/fonts/NotoColorEmoji.ttf);
 }
@@ -43,7 +40,7 @@ src: url(https://raw.githack.com/googlefonts/noto-emoji/main/fonts/NotoColorEmoj
 .openmoji {
   font-family: 'OpenMojiColor', sans-serif;
 }
-.tweMoji {
+.twemoji {
   font-family: 'Twemoji', sans-serif;
 }
 .notoColor {
