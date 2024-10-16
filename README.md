@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Emoji Favicons
+
+This project is a Next.js application that allows users to browse a collection of emojis and convert them into favicon files. Users can filter emojis by name and select categories to display.
+
+## Features
+
+- Browse emojis grouped by categories.
+- Filter emojis by name.
+- Convert emojis to favicon files in multiple sizes.
+- Download favicons as a ZIP file.
+
+## Technologies Used
+
+- [Next.js](https://nextjs.org/) - React framework for server-side rendering.
+- [JSZip](https://stuk.github.io/jszip/) - Library for creating ZIP files.
+- [Materialize CSS](https://materializecss.com/) - Front-end framework for responsive design.
+- [OpenMoji](https://openmoji.org/) - Open-source emoji library.
+
+## Deployment
+
+This project is deployed on [Vercel](https://vercel.com/), providing fast and reliable hosting for Next.js applications.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js (version 12 or later)
+- npm (version 6 or later)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+1. Clone the repository:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+   ```bash
+   git clone https://github.com/yourusername/emoji-favicons.git
+   cd emoji-favicons
+   ```
 
-## Learn More
+2. Install dependencies:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Run the development server:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+   ```bash
+   npm run dev
+   ```
 
-## Deploy on Vercel
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the app.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Usage
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Use the search box to filter emojis by name.
+- Click on category checkboxes to toggle emoji categories.
+- Click "All" or "None" to select or unselect all categories.
+- Click on an emoji to convert it into a favicon and download it as a ZIP file.
+
+## License
+
+This project is licensed under the MIT License.
+
+## Acknowledgments
+
+- Emoji data from [emoji.json](https://github.com/iamcal/emoji-data).
+- Fonts from [Twemoji](https://twemoji.twitter.com/) and [Noto Color Emoji](https://www.google.com/get/noto/).
+
