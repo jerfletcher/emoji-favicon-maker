@@ -1,101 +1,155 @@
-import Image from "next/image";
+"use client"
+import { useEffect, useState } from 'react';
+import JSZip from 'jszip';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [allEmojis, setAllEmojis] = useState([]);
+  const [activeCategories, setActiveCategories] = useState(new Set());
+  const [filter, setFilter] = useState('');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    async function fetchEmojis() {
+      const response = await fetch('https://cdn.jsdelivr.net/npm/emoji.json@13.1.0/emoji.json');
+      const emojis = await response.json();
+      setAllEmojis(emojis);
+      const groupedEmojis = groupEmojisByCategory(emojis);
+      setActiveCategories(new Set(Object.keys(groupedEmojis)));
+    }
+
+    fetchEmojis();
+  }, []);
+
+  const groupEmojisByCategory = (emojis) => {
+    return emojis.reduce((groups, emoji) => {
+      const category = emoji.category?.split(' (')[0] || 'Other';
+      if (!groups[category]) {
+        groups[category] = [];
+      }
+      groups[category].push(emoji);
+      return groups;
+    }, {});
+  };
+
+  const displayEmojis = (groups) => {
+    return Object.entries(groups).map(([category, emojis]) => {
+      if (!activeCategories.has(category)) return null;
+      return emojis.map(emoji => (
+        <div key={emoji.char} className="emoji-item" title={emoji.name}>
+        <span className="emoji tweMoji" onClick={() => convertToFavicon(emoji.char, emoji.name, 'Twemoji')}>{emoji.char}</span>
+        <span className="emoji notoColor" onClick={() => convertToFavicon(emoji.char, emoji.name, 'Noto Color Emoji')}>{emoji.char}</span>
+        <span className="emoji-name">{emoji.name}</span>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      ));
+    });
+  };
+
+  const createCategoryCheckboxes = (groups) => {
+    return Object.keys(groups).map(category => (
+      <div key={category}>
+        <input
+          type="checkbox"
+          id={`checkbox-${category}`}
+          checked={activeCategories.has(category)}
+          onChange={() => toggleCategory(category)}
+        />
+        <label htmlFor={`checkbox-${category}`}>{category}</label>
+      </div>
+    ));
+  };
+
+  const toggleCategory = (category) => {
+    setActiveCategories(prev => {
+      const newCategories = new Set(prev);
+      if (newCategories.has(category)) {
+        newCategories.delete(category);
+      } else {
+        newCategories.add(category);
+      }
+      return newCategories;
+    });
+  };
+
+  const convertToFavicon = (emoji, name, fontClass) => {
+    const sizes = [16, 32, 48, 180];
+    const zip = new JSZip();
+  
+    sizes.forEach(size => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = size;
+      canvas.height = size;
+      ctx.font = `${size * 0.75}px ${fontClass}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(emoji, canvas.width / 2, canvas.height / 2);
+  
+      canvas.toBlob(blob => {
+        const fileName = size === 180 ? `${name}_180.png` : `${name}_${size}.ico`;
+        zip.file(fileName, blob);
+        if (size === sizes[sizes.length - 1]) {
+          createManifestAndDownload(zip, name);
+        }
+      }, size === 180 ? 'image/png' : 'image/x-icon');
+    });
+  };
+
+  const createManifestAndDownload = (zip, name) => {
+    const manifest = {
+      icons: [
+        { src: `${name}_16.ico`, sizes: "16x16", type: "image/x-icon" },
+        { src: `${name}_32.ico`, sizes: "32x32", type: "image/x-icon" },
+        { src: `${name}_48.ico`, sizes: "48x48", type: "image/x-icon" },
+        { src: `${name}_180.png`, sizes: "180x180", type: "image/png" }
+      ]
+    };
+    zip.file('manifest.json', JSON.stringify(manifest, null, 2));
+
+    zip.generateAsync({ type: 'blob' }).then(content => {
+      const url = URL.createObjectURL(content);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${name}_favicons.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  };
+
+  const filterEmojis = () => {
+    const filteredEmojis = allEmojis.filter(emoji => emoji.name.toLowerCase().includes(filter.toLowerCase()));
+    const groupedEmojis = groupEmojisByCategory(filteredEmojis);
+    return groupedEmojis;
+  };
+
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+  };
+
+  const handleSelectAll = () => {
+    const groupedEmojis = groupEmojisByCategory(allEmojis);
+    setActiveCategories(new Set(Object.keys(groupedEmojis)));
+  };
+
+  const handleUnselectAll = () => {
+    setActiveCategories(new Set());
+  };
+
+  const groupedEmojis = filterEmojis();
+
+  return (
+    <div className="container center-content">
+      <input type="text" id="emoji-filter" placeholder="Filter by name" className="input-field" value={filter} onChange={handleFilterChange} />
+      <div id="checkbox-container" className="checkbox-container">
+        {createCategoryCheckboxes(groupedEmojis)}
+      </div>
+      <div className="toggle-buttons">
+        <span onClick={handleSelectAll}>All</span>
+        <span onClick={handleUnselectAll}>None</span>
+      </div>
+      <div id="emoji-container" className="emoji-container">
+        {displayEmojis(groupedEmojis)}
+      </div>
     </div>
   );
 }
