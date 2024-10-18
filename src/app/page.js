@@ -1,6 +1,11 @@
 "use client"
 import { useEffect, useState } from 'react';
 import JSZip from 'jszip';
+import Link from 'next/link';
+
+const generateSlug = (name) => {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+};
 
 export default function Home() {
   const [allEmojis, setAllEmojis] = useState([]);
@@ -35,9 +40,11 @@ export default function Home() {
       if (!activeCategories.has(category)) return null;
       return emojis.map(emoji => (
         <div key={emoji.char} className="emoji-item" title={emoji.name}>
-        <span className="emoji twemoji" onClick={() => convertToFavicon(emoji.char, emoji.name, 'Twemoji')}>{emoji.char}</span>
-        <span className="emoji notoColor" onClick={() => convertToFavicon(emoji.char, emoji.name, 'Noto Color Emoji')}>{emoji.char}</span>
-        <span className="emoji-name">{emoji.name}</span>
+        <Link href={`/emoji/${generateSlug(emoji.name)}`}>
+            <span className="emoji twemoji">{emoji.char}</span>
+            <span className="emoji notoColor">{emoji.char}</span>
+            <span className="emoji-name">{emoji.name}</span>
+          </Link>
         </div>
       ));
     });

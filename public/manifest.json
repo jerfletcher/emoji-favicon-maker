@@ -1,0 +1,24 @@
+{
+  "icons": [
+    {
+      "src": "grinning cat with smiling eyes_16.ico",
+      "sizes": "16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "grinning cat with smiling eyes_32.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "grinning cat with smiling eyes_48.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "grinning cat with smiling eyes_180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
