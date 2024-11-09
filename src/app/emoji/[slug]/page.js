@@ -1,5 +1,5 @@
-import { getEmoji, generateSlug } from '../../lib/emojiUtils';
-import EmojiPage from './EmojiPage';
+import { getEmoji, generateSlug } from '@/lib/emojiUtils';
+import EmojiPage from '@/components/EmojiPage';
 
 const fetchEmojis = async () => {
   const response = await fetch('https://cdn.jsdelivr.net/npm/emoji.json@13.1.0/emoji.json');
