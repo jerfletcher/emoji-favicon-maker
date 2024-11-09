@@ -17,4 +17,6 @@ const EmojiCard = forwardRef(({ emoji }, ref) => {
   );
 });
 
+EmojiCard.displayName = 'EmojiCard';
+
 export default EmojiCard;
