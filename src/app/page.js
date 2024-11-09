@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation'; // Updated import statement
 import { fetchEmojis } from '@/lib/emojiUtils';
 import EmojiCard from '@/components/EmojiCard';
 import FilterBar from '@/components/FilterBar';
@@ -11,6 +12,8 @@ export default function Home() {
   const [visibleEmojis, setVisibleEmojis] = useState([]);
   const [filterBarHeight, setFilterBarHeight] = useState(0);
   const observer = useRef();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     async function loadEmojis() {
@@ -22,6 +25,26 @@ export default function Home() {
 
     loadEmojis();
   }, []);
+
+  useEffect(() => {
+    const savedFilter = localStorage.getItem('filter') || '';
+    const savedScrollPosition = localStorage.getItem('scrollPosition') || 0;
+    const savedCategories = JSON.parse(localStorage.getItem('activeCategories')) || [];
+    setFilter(savedFilter);
+    setActiveCategories(new Set(savedCategories));
+
+    // Calculate the number of emojis to load based on the scroll position
+    const emojiCardHeight = 100; // Approximate height of each emoji card
+    const emojisPerRow = 5; // Number of emojis per row
+    const emojisToLoad = Math.ceil(savedScrollPosition / emojiCardHeight) * emojisPerRow;
+
+    setVisibleEmojis(allEmojis.slice(0, Math.max(emojisToLoad, 50))); // Ensure at least 50 emojis are loaded initially
+  }, [allEmojis]);
+
+  useEffect(() => {
+    const savedScrollPosition = localStorage.getItem('scrollPosition') || 0;
+    window.scrollTo(0, parseInt(savedScrollPosition, 10));
+  }, [visibleEmojis]);
 
   const groupEmojisByCategory = (emojis) => {
     return emojis.reduce((groups, emoji) => {
@@ -46,10 +69,6 @@ export default function Home() {
       }
     });
     if (node) observer.current.observe(node);
-  }, [allEmojis]);
-
-  useEffect(() => {
-    setVisibleEmojis(allEmojis.slice(0, 50));
   }, [allEmojis]);
 
   const displayEmojis = (groups) => {
@@ -77,6 +96,12 @@ export default function Home() {
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
+    localStorage.setItem('filter', e.target.value);
+  };
+
+  const handleCategoryChange = (newCategories) => {
+    setActiveCategories(newCategories);
+    localStorage.setItem('activeCategories', JSON.stringify(Array.from(newCategories)));
   };
 
   const groupedEmojis = filterEmojis();
@@ -88,7 +113,7 @@ export default function Home() {
         handleFilterChange={handleFilterChange}
         groupedEmojis={groupedEmojis}
         activeCategories={activeCategories}
-        setActiveCategories={setActiveCategories}
+        setActiveCategories={handleCategoryChange}
         allEmojis={allEmojis}
         groupEmojisByCategory={groupEmojisByCategory}
         setFilterBarHeight={setFilterBarHeight}

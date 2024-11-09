@@ -20,17 +20,21 @@ const toggleCategory = (category, setActiveCategories) => {
     } else {
       newCategories.add(category);
     }
+    localStorage.setItem('activeCategories', JSON.stringify(Array.from(newCategories)));
     return newCategories;
   });
 };
 
 const handleSelectAll = (allEmojis, setActiveCategories, groupEmojisByCategory) => {
   const groupedEmojis = groupEmojisByCategory(allEmojis);
-  setActiveCategories(new Set(Object.keys(groupedEmojis)));
+  const allCategories = new Set(Object.keys(groupedEmojis));
+  setActiveCategories(allCategories);
+  localStorage.setItem('activeCategories', JSON.stringify(Array.from(allCategories)));
 };
 
 const handleUnselectAll = (setActiveCategories) => {
   setActiveCategories(new Set());
+  localStorage.setItem('activeCategories', JSON.stringify([]));
 };
 
 export default function FilterBar({ filter, handleFilterChange, groupedEmojis, activeCategories, setActiveCategories, allEmojis, groupEmojisByCategory, setFilterBarHeight }) {

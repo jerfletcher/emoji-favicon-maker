@@ -1,9 +1,13 @@
 "use client";
 
 import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation'; // Updated import statement
 import { convertToFavicon } from '@/lib/faviconUtils';
 
 export default function EmojiPage({ emoji }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   if (!emoji) {
     return <div>Emoji not found</div>;
   }
