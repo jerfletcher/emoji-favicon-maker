@@ -1,6 +1,7 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import Head from "next/head";
+import Link from 'next/link';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,7 +30,27 @@ export default function RootLayout({ children }) {
         <link rel="manifest" href="/manifest.json" />
       </Head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
+        <header className="bg-white shadow-md">
+          <div className="container mx-auto flex justify-between items-center p-4">
+            <h1 className="text-2xl font-semibold text-gray-800">Emoji Favicon Maker</h1>
+            <nav className="space-x-4">
+              <Link href="/" className="text-gray-600 hover:text-gray-800">Home</Link>
+              <Link href="/about" className="text-gray-600 hover:text-gray-800">About</Link>
+            </nav>
+          </div>
+        </header>
+        <main className="container mx-auto p-4">
+          {children}
+        </main>
+        <footer className="bg-white shadow-inner mt-4">
+          <div className="container mx-auto text-center p-4">
+            <p className="text-gray-600">&copy; 2023 Emoji Favicon Maker. All rights reserved.</p>
+            <nav className="space-x-4">
+              <Link href="/privacy-policy" className="text-gray-600 hover:text-gray-800">Privacy Policy</Link>
+              <Link href="/terms-of-use" className="text-gray-600 hover:text-gray-800">Terms of Use</Link>
+            </nav>
+          </div>
+        </footer>
       </body>
     </html>
   );

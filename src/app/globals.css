@@ -30,8 +30,8 @@ body {
 }
 
 @font-face {
-font-family: 'Noto Color Emoji';
-src: url(https://raw.githack.com/googlefonts/noto-emoji/main/fonts/NotoColorEmoji.ttf);
+  font-family: 'Noto Color Emoji';
+  src: url(https://raw.githack.com/googlefonts/noto-emoji/main/fonts/NotoColorEmoji.ttf);
 }
 
 .emoji-group {

@@ -14,15 +14,15 @@ export default function EmojiPage({ emoji }) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-      <h1>{emoji.name}</h1>
-      <div style={{ fontSize: '4rem' }}>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1 className="text-4xl font-bold">{emoji.name}</h1>
+      <div className="text-6xl my-4">
         <span className="emoji twemoji">{emoji.char}</span>
         <span className="emoji notoColor">{emoji.char}</span>
       </div>
-      <p>Category: {emoji.category}</p>
-      <button onClick={downloadZip} style={{ marginTop: '20px', padding: '10px 20px', fontSize: '16px' }}>Download Icon Zip</button>
-      <Link href="/" style={{ marginTop: '20px', fontSize: '16px', color: 'blue', textDecoration: 'underline' }}>
+      <p className="text-lg">Category: {emoji.category}</p>
+      <button onClick={downloadZip} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Download Icon Zip</button>
+      <Link href="/" className="mt-4 text-blue-500 underline">
         Back to Home
       </Link>
     </div>

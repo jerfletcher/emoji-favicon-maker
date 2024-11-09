@@ -1,5 +1,10 @@
-import { getEmoji, generateSlug } from './emojiUtils';
+import { getEmoji, generateSlug } from '../../lib/emojiUtils';
 import EmojiPage from './EmojiPage';
+
+const fetchEmojis = async () => {
+  const response = await fetch('https://cdn.jsdelivr.net/npm/emoji.json@13.1.0/emoji.json');
+  return await response.json();
+};
 
 export default async function EmojiServerPage({ params }) {
   const { slug } = params;
@@ -9,8 +14,7 @@ export default async function EmojiServerPage({ params }) {
 }
 
 export async function generateStaticParams() {
-  const response = await fetch('https://cdn.jsdelivr.net/npm/emoji.json@13.1.0/emoji.json');
-  const emojis = await response.json();
+  const emojis = await fetchEmojis();
   return emojis.map(emoji => ({
     slug: generateSlug(emoji.name),
   }));

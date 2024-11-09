@@ -1,11 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react';
-import JSZip from 'jszip';
-import Link from 'next/link';
-
-const generateSlug = (name) => {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-};
+import { fetchEmojis, generateSlug } from './lib/emojiUtils';
+import EmojiCard from './components/EmojiCard';
 
 export default function Home() {
   const [allEmojis, setAllEmojis] = useState([]);
@@ -13,15 +9,14 @@ export default function Home() {
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
-    async function fetchEmojis() {
-      const response = await fetch('https://cdn.jsdelivr.net/npm/emoji.json@13.1.0/emoji.json');
-      const emojis = await response.json();
+    async function loadEmojis() {
+      const emojis = await fetchEmojis();
       setAllEmojis(emojis);
       const groupedEmojis = groupEmojisByCategory(emojis);
       setActiveCategories(new Set(Object.keys(groupedEmojis)));
     }
 
-    fetchEmojis();
+    loadEmojis();
   }, []);
 
   const groupEmojisByCategory = (emojis) => {
@@ -39,13 +34,7 @@ export default function Home() {
     return Object.entries(groups).map(([category, emojis]) => {
       if (!activeCategories.has(category)) return null;
       return emojis.map(emoji => (
-        <div key={emoji.char} className="emoji-item" title={emoji.name}>
-        <Link href={`/emoji/${generateSlug(emoji.name)}`}>
-            <span className="emoji twemoji">{emoji.char}</span>
-            <span className="emoji notoColor">{emoji.char}</span>
-            <span className="emoji-name">{emoji.name}</span>
-          </Link>
-        </div>
+        <EmojiCard key={emoji.char} emoji={emoji} />
       ));
     });
   };
@@ -145,16 +134,16 @@ export default function Home() {
   const groupedEmojis = filterEmojis();
 
   return (
-    <div className="container center-content">
-      <input type="text" id="emoji-filter" placeholder="Filter by name" className="input-field" value={filter} onChange={handleFilterChange} />
-      <div id="checkbox-container" className="checkbox-container">
+    <div className="container mx-auto p-4">
+      <input type="text" id="emoji-filter" placeholder="Filter by name" className="input-field mb-4 p-2 border rounded" value={filter} onChange={handleFilterChange} />
+      <div id="checkbox-container" className="checkbox-container flex flex-wrap justify-center mb-4">
         {createCategoryCheckboxes(groupedEmojis)}
       </div>
-      <div className="toggle-buttons">
-        <span onClick={handleSelectAll}>All</span>
-        <span onClick={handleUnselectAll}>None</span>
+      <div className="toggle-buttons flex justify-center mb-4">
+        <span className="cursor-pointer text-blue-500 mx-2" onClick={handleSelectAll}>All</span>
+        <span className="cursor-pointer text-blue-500 mx-2" onClick={handleUnselectAll}>None</span>
       </div>
-      <div id="emoji-container" className="emoji-container">
+      <div id="emoji-container" className="emoji-container flex flex-wrap justify-center">
         {displayEmojis(groupedEmojis)}
       </div>
     </div>
