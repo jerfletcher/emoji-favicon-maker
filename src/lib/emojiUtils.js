@@ -1,6 +1,20 @@
+
+const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
+
+let cachedEmojis = null;
+let lastFetchTime = 0;
+
 export async function fetchEmojis() {
+  const now = new Date().getTime();
+
+  if (cachedEmojis && (now - lastFetchTime < ONE_DAY_IN_MS)) {
+    return cachedEmojis;
+  }
+
   const response = await fetch('https://cdn.jsdelivr.net/npm/emoji.json@13.1.0/emoji.json');
-  return await response.json();
+  cachedEmojis = await response.json();
+  lastFetchTime = now;
+  return cachedEmojis;
 }
 
 export async function getEmoji(slug) {
