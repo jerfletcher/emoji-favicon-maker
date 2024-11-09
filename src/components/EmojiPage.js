@@ -1,10 +1,11 @@
 "use client";
 
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation'; // Updated import statement
+import { usePathname, useSearchParams } from 'next/navigation';
 import { convertToFavicon } from '@/lib/faviconUtils';
+import { Suspense } from 'react';
 
-export default function EmojiPage({ emoji }) {
+function EmojiContent({ emoji }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -51,5 +52,13 @@ export default function EmojiPage({ emoji }) {
         </nav>
       </div>
     </div>
+  );
+}
+
+export default function EmojiPage({ emoji }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EmojiContent emoji={emoji} />
+    </Suspense>
   );
 }
