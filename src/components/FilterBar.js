@@ -47,16 +47,18 @@ export default function FilterBar({ filter, handleFilterChange, groupedEmojis, a
       }
     });
 
-    if (filterBarRef.current) {
-      resizeObserver.observe(filterBarRef.current);
+    const currentRef = filterBarRef.current;
+
+    if (currentRef) {
+      resizeObserver.observe(currentRef);
     }
 
     return () => {
-      if (filterBarRef.current) {
-        resizeObserver.unobserve(filterBarRef.current);
+      if (currentRef) {
+        resizeObserver.unobserve(currentRef);
       }
     };
-  }, [filterBarRef, groupedEmojis, activeCategories]);
+  }, [filterBarRef, groupedEmojis, activeCategories, setFilterBarHeight]);
 
   return (
     <div ref={filterBarRef} className="fixed top-24 left-8 right-8 bg-white shadow-md z-10 rounded-lg p-4">

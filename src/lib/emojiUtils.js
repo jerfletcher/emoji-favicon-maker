@@ -1,25 +1,22 @@
+import emojisServer from '@/lib/data/emoji.json';
 
-const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
-
-let cachedEmojis = null;
-let lastFetchTime = 0;
+let emojis = emojisServer;
+if (typeof window !== 'undefined') {
+  // Client-side
+  emojis = require('@/lib/data/emoji.json');
+}
 
 export async function fetchEmojis() {
-  const now = new Date().getTime();
-
-  if (cachedEmojis && (now - lastFetchTime < ONE_DAY_IN_MS)) {
-    return cachedEmojis;
+  if (typeof window === 'undefined') {
+    // Server-side
+    emojis = await import('@/lib/data/emoji.json').then(module => module.default);
   }
-
-  const response = await fetch('https://cdn.jsdelivr.net/npm/emoji.json@13.1.0/emoji.json');
-  cachedEmojis = await response.json();
-  lastFetchTime = now;
-  return cachedEmojis;
+  return emojis;
 }
 
 export async function getEmoji(slug) {
-  const emojis = await fetchEmojis();
-  return emojis.find(e => generateSlug(e.name) === slug) || null;
+  const allEmojis = await fetchEmojis();
+  return allEmojis.find(e => generateSlug(e.name) === slug) || null;
 }
 
 export const generateSlug = (name) => {

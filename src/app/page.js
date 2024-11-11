@@ -1,6 +1,6 @@
-"use client"
+"use client";
+import { Suspense } from 'react';
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation'; // Updated import statement
 import { fetchEmojis } from '@/lib/emojiUtils';
 import EmojiCard from '@/components/EmojiCard';
 import FilterBar from '@/components/FilterBar';
@@ -12,8 +12,6 @@ export default function Home() {
   const [visibleEmojis, setVisibleEmojis] = useState([]);
   const [filterBarHeight, setFilterBarHeight] = useState(0);
   const observer = useRef();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     async function loadEmojis() {
@@ -22,7 +20,6 @@ export default function Home() {
       const groupedEmojis = groupEmojisByCategory(emojis);
       setActiveCategories(new Set(Object.keys(groupedEmojis)));
     }
-
     loadEmojis();
   }, []);
 
@@ -33,12 +30,11 @@ export default function Home() {
     setFilter(savedFilter);
     setActiveCategories(new Set(savedCategories));
 
-    // Calculate the number of emojis to load based on the scroll position
-    const emojiCardHeight = 100; // Approximate height of each emoji card
-    const emojisPerRow = 5; // Number of emojis per row
+    const emojiCardHeight = 100;
+    const emojisPerRow = 5;
     const emojisToLoad = Math.ceil(savedScrollPosition / emojiCardHeight) * emojisPerRow;
 
-    setVisibleEmojis(allEmojis.slice(0, Math.max(emojisToLoad, 50))); // Ensure at least 50 emojis are loaded initially
+    setVisibleEmojis(allEmojis.slice(0, Math.max(emojisToLoad, 50)));
   }, [allEmojis]);
 
   useEffect(() => {
@@ -107,20 +103,22 @@ export default function Home() {
   const groupedEmojis = filterEmojis();
 
   return (
-    <div className="container mx-auto p-4">
-      <FilterBar
-        filter={filter}
-        handleFilterChange={handleFilterChange}
-        groupedEmojis={groupedEmojis}
-        activeCategories={activeCategories}
-        setActiveCategories={handleCategoryChange}
-        allEmojis={allEmojis}
-        groupEmojisByCategory={groupEmojisByCategory}
-        setFilterBarHeight={setFilterBarHeight}
-      />
-      <div id="emoji-container" className="emoji-container flex flex-wrap justify-center" style={{ marginTop: filterBarHeight + 44 }}>
-        {displayEmojis(groupedEmojis)}
+    <Suspense fallback={<div>Loading...</div>}>
+      <div className="container mx-auto p-4">
+        <FilterBar
+          filter={filter}
+          handleFilterChange={handleFilterChange}
+          groupedEmojis={groupedEmojis}
+          activeCategories={activeCategories}
+          setActiveCategories={handleCategoryChange}
+          allEmojis={allEmojis}
+          groupEmojisByCategory={groupEmojisByCategory}
+          setFilterBarHeight={setFilterBarHeight}
+        />
+        <div id="emoji-container" className="emoji-container flex flex-wrap justify-center" style={{ marginTop: filterBarHeight + 44 }}>
+          {displayEmojis(groupedEmojis)}
+        </div>
       </div>
-    </div>
+    </Suspense>
   );
 }
